@@ -19,8 +19,7 @@ pod = runpod.create_pod(
 	image_name="runpod/stack", 
 	gpu_type_id="NVIDIA RTX A5000",
 	template_id="q2xr9sm3mm",
-	# min_memory_in_gb=10,
-	container_disk_in_gb=2
+	container_disk_in_gb=20
 )
 
 # # Stop the pod
