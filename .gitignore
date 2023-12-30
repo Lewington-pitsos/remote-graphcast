@@ -1,4 +1,8 @@
 credentials.json
 venv
 **/__pycache__
+**/.pytest_cache
 commands.sh
+cruft
+*.nc
+pad.py

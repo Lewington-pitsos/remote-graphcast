@@ -2,4 +2,9 @@
 
 echo "graphcast pod start script running..."
 
-python app/test.py
+nvcc --version
+
+nvidia-smi
+
+python pad.py
+

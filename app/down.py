@@ -14,10 +14,9 @@ from cdsutils import *
 # save_cds_rcfile(credentials[CDS_KEY], credentials[CDS_URL])
 
 def download():
-
-	p = StateList(datetime.datetime(2023, 12, 20, 6), 241, 12)
+	p = StateList(datetime.datetime(2023, 12, 30, 6), 241, 12)
 	predicted_dates = p.dates_mapped_to_hours(
-		upper_bound=datetime.datetime(2023, 12, 25, 6)
+		upper_bound=datetime.datetime(2023, 12, 31, 6)
 	)
 
 
@@ -34,6 +33,7 @@ def download():
 			grid='0.25/0.25',
 			date=date,
 			time=hours,
+			lazily=True,
 		)
 		all_ds.append(ds)
 
@@ -47,6 +47,9 @@ def download():
 
 	print(ds)
 
+
+if __name__ == '__main__':
+	download()
 
 # ds = ds.to_xarray()
 # ds = ds.isel(time=0)
