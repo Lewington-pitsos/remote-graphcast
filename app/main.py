@@ -100,10 +100,9 @@ def remote_cast(
 		cast_id = generate_cast_id()
 
 	pod = runpod.create_pod(
-		name="test", 
+		name=f"easy-graphcast-{cast_id}", 
 		image_name="lewingtonpitsos/easy-graphcast:latest", 
 		gpu_type_id="NVIDIA RTX A5000",
-		template_id="1lid92ziww",
 		container_disk_in_gb=100,
 		env={
 			AWS_ACCESS_KEY_ID: aws_access_key_id,
