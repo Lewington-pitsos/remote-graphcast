@@ -1,5 +1,5 @@
 import os
-import json
+from inpututils import parse_date_list
 import boto3
 from cdsutils import save_cds_rcfile
 from ai_models_graphcast.model import GraphcastModel
@@ -8,22 +8,7 @@ from botocore.exceptions import NoCredentialsError
 from constants import *
 from lg import setup_logging
 import logging
-logger = logger.getLogger(__name__)
-
-
-
-def validate_date_list(date_list):
-	# make sure all data is available
-	# make sure start times start at 0600 or 1800
-	pass
-
-def parse_date_list(date_list):
-	date_list = json.loads(date_list)
-
-	for start in date_list:
-		start['start_time'] = datetime.strptime(start['start_time'], "%Y%m%d%H")
-
-	return date_list
+logger = logging.getLogger(__name__)
 
 def cast_all(
 		aws_access_key_id, 

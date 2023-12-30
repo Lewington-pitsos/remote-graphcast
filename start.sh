@@ -6,5 +6,7 @@ nvcc --version
 
 nvidia-smi
 
-python pad.py
+python app/cast.py
+# python pad.py
+
 

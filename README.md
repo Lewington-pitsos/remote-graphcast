@@ -8,6 +8,8 @@ docker run -e AWS_ACCESS_KEY_ID=SOME_ID -e AWS_SECRET_ACCESS_KEY=SOME_SECRET -e 
 
 docker run --gpus all -it lewingtonpitsos/easy-graphcast:latest /bin/bash 
 
+docker run --gpus all lewingtonpitsos/easy-graphcast:latest 
+
 
 pip install -U "jax[cuda11_local]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
