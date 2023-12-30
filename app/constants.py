@@ -4,3 +4,16 @@ AWS_BUCKET = 'AWS_BUCKET'
 AWS_REGION = 'AWS_REGION'
 CDS_URL = 'CDS_URL'
 CDS_KEY = 'CDS_KEY'
+GRAPHCAST_DATE_LIST = 'GRAPHCAST_DATE_LIST'
+
+
+# from https://github.com/ecmwf-lab/ai-models-graphcast/blob/main/ai_models_graphcast/input.py 
+CF_NAME_SFC = {
+    "10u": "10m_u_component_of_wind",
+    "10v": "10m_v_component_of_wind",
+    "2t": "2m_temperature",
+    "lsm": "land_sea_mask",
+    "msl": "mean_sea_level_pressure",
+    "tp": "total_precipitation_6hr",
+    "z": "geopotential_at_surface",
+}

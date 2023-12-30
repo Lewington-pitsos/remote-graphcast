@@ -1,19 +1,13 @@
 import os
 import json
 import boto3
-import fire
 from cdsutils import save_cds_rcfile
 import logging
 logging.basicConfig(level=logging.INFO)
 from ai_models_graphcast.model import GraphcastModel
 from datetime import datetime
 from botocore.exceptions import NoCredentialsError
-
-sl = StateList(datetime(2023, 12, 20, 6), 240, step_size=240)
-
-
-# filename = 'cruft/era5/-16-era5.nc'
-# os.makedirs(os.path.dirname(filename), exist_ok=True)
+from constants import *
 
 
 def validate_date_list(date_list):
@@ -27,7 +21,7 @@ def parse_date_list(date_list):
 
 	return date_list
 
-def main(
+def cast_all(
 		aws_access_key_id, 
 		aws_secret_access_key, 
 		bucket_name,
@@ -79,9 +73,29 @@ def main(
 				except NoCredentialsError:
 					print("Credentials not available")
 
-		
 
-	
 
-if __name__ == '__main__':
-	fire.Fire(main)
+required_variables = [
+	AWS_ACCESS_KEY_ID,
+	AWS_SECRET_ACCESS_KEY,
+	AWS_BUCKET,
+	AWS_REGION,
+	CDS_URL,
+	CDS_KEY,
+	GRAPHCAST_DATE_LIST
+]
+
+print('Checking environment variables are set')
+for var in required_variables:
+	if var not in os.environ:
+		raise Exception(f"Missing required environment variable {var}")
+	else:
+		print(f"{var}: {os.environ[var]}")
+
+
+
+print('home', os.listdir('~/'))
+save_cds_rcfile(cds_key=os.environ[CDS_KEY], cds_url=os.environ[CDS_URL])
+
+print(os.listdir('/app'))
+print('home', os.listdir('~/'))

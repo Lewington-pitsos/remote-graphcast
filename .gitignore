@@ -1,3 +1,4 @@
 credentials.json
 venv
 **/__pycache__
+commands.sh
