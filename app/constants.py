@@ -7,6 +7,7 @@ CDS_KEY = 'CDS_KEY'
 DATE_LIST = 'GRAPHCAST_DATE_LIST'
 CAST_ID = 'CAST_ID'
 COMPLETE_PATH = '.easy_graphcast_complete'
+RUNPOD_KEY = "RUNPOD_KEY"
 
 
 # from https://github.com/ecmwf-lab/ai-models-graphcast/blob/main/ai_models_graphcast/input.py 

@@ -6,6 +6,9 @@ import xarray
 from constants import CDS_KEY, CDS_URL
 import json
 from cdsutils import *
+from lg import setup_logging
+import logging
+logger = logging.getLogger(__name__)
 
 # with open('credentials.json') as f:
 # 	credentials = json.load(f)
@@ -21,7 +24,7 @@ def download():
 
 
 
-	print('dates to download', predicted_dates)
+	logger.info('dates to download', predicted_dates)
 
 	all_ds = []
 	for date, hours in predicted_dates:
@@ -34,10 +37,10 @@ def download():
 			date=date,
 			time=hours,
 			lazily=True,
-		)
+		) 
 		all_ds.append(ds)
 
-	print(all_ds)
+	logger.info('all downloaded', extra={'datasets': all_ds})
 
 	filename = 'cruft/era5/-20231220-era5.nc'
 	os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -45,16 +48,8 @@ def download():
 	ds = xarray.concat([d.to_xarray() for d in all_ds], dim='time')
 	ds.to_netcdf(filename)
 
-	print(ds)
 
 
 if __name__ == '__main__':
+	setup_logging()
 	download()
-
-# ds = ds.to_xarray()
-# ds = ds.isel(time=0)
-
-# print(dir(ds))
-# print(ds.var)
-# plt.imshow(ds.t2m.squeeze())
-# plt.savefig('cruft/era5.png')

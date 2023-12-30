@@ -2,12 +2,15 @@ import os
 import json
 import boto3
 from cdsutils import save_cds_rcfile
-import logging
-logging.basicConfig(level=logging.INFO)
 from ai_models_graphcast.model import GraphcastModel
 from datetime import datetime
 from botocore.exceptions import NoCredentialsError
 from constants import *
+from lg import setup_logging
+import logging
+logger = logger.getLogger(__name__)
+
+
 
 def validate_date_list(date_list):
 	# make sure all data is available
@@ -33,10 +36,10 @@ def cast_all(
 	):
 
 	save_cds_rcfile(cds_key=cds_key, cds_url=cds_url)
-	print('cds credentials file created')
+	logger.debug('cds credentials file created')
 	date_list = parse_date_list(date_list)
 	s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-	print('s3 client set up')
+	logger.debug('s3 client set up')
 
 	dir_path = f'/tmp/{cast_id}/'
 	for start_point in date_list:
@@ -66,9 +69,9 @@ def cast_all(
 
 		gc.run()
 
-		print(f"forcast complete for {start_point['start_time']}")
+		logger.info(f"forcast complete for {start_point['start_time']}")
 
-	print(f"all forcasts complete for {cast_id}, uploading to s3")
+	logger.info(f"all forcasts complete for {cast_id}, uploading to s3")
 
 	for subdir, _, files in os.walk(dir_path):
 		for file in files:
@@ -76,13 +79,14 @@ def cast_all(
 			with open(full_path, 'rb') as data:
 				try:
 					s3_client.upload_fileobj(data, bucket_name, full_path[len(dir_path)+1:])
-					print(f"File {file} uploaded successfully")
+					logger.debug(f"File {file} uploaded successfully")
 				except NoCredentialsError:
-					print("Credentials not available")
+					logger.error("Credentials not available")
 
-	print(f"upload complete for {cast_id}")
+	logger.info(f"upload complete for {cast_id}")
 
 if __name__ == "__main__":
+	setup_logging()
 
 	required_variables = [
 		AWS_ACCESS_KEY_ID,
@@ -95,13 +99,12 @@ if __name__ == "__main__":
 		CAST_ID
 	]
 
-	print('Checking environment variables are set')
+	logger.debug('Checking environment variables are set')
 	for var in required_variables:
 		if var not in os.environ:
 			raise Exception(f"Missing required environment variable {var}")
 		else:
-			print(f"{var}: {os.environ[var]}")
-
+			logger.debug(f"{var}: {os.environ[var]}")
 
 	cast_all(
 		aws_access_key_id=os.environ[AWS_ACCESS_KEY_ID], 

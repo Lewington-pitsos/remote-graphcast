@@ -6,6 +6,10 @@ import json
 from constants import *
 import datetime
 import random
+from lg import setup_logging
+import logging
+logger = logger.getLogger(__name__)
+
 
 def generate_cast_id():
     adj = [
@@ -113,13 +117,20 @@ def remote_cast(
 		}
 	)
 	
-	print(pod)
+	logger.debug("forcasting pod created", extra={'pod_info': pod})
 	monitor = UploadMonitor(pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id)
 
 	while not monitor.is_complete():
 		time.sleep(60)
-		print('polling for upload completion, all systems green at:', datetime.datetime.now())
-		pass
+		logger.info('polling for upload completion, all systems green')
 
-	print('forcast is complete and can be found at:', monitor.upload_location())
-	
+	logger.info('forcast is complete', extra={'forcast_location', monitor.upload_location()})
+
+	runpod.terminate_pod(pod.id)
+
+	logger.info('pod terminated')
+
+
+if __name__ == '__main__':
+	setup_logging()
+	fire.Fire(remote_cast)
