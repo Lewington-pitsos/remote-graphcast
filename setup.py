@@ -20,7 +20,6 @@ setuptools.setup(
     ],
     install_requires=[
         'boto3', 
-        'ai_models_graphcast',
         'cdsapi',
         'runpod'
 	],

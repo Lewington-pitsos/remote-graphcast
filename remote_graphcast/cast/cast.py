@@ -1,13 +1,13 @@
-from .log_config import setup_logging
+from remote_graphcast.gcutils.log_config import setup_logging
 setup_logging()
 
 import os
 import boto3
 from ai_models_graphcast.model import GraphcastModel
 from botocore.exceptions import NoCredentialsError
-from .cdsutils import save_cds_rcfile
-from .inpututils import parse_date_list, get_completion_path
-from .constants import *
+from remote_graphcast.gcutils.cdsutils import save_cds_rcfile
+from remote_graphcast.gcutils.inpututils import parse_date_list, get_completion_path
+from remote_graphcast.gcutils.constants import *
 import shutil
 import logging
 

@@ -1,5 +1,6 @@
 credentials.json
 venv
+rvenv
 **/__pycache__
 **/.pytest_cache
 commands.sh

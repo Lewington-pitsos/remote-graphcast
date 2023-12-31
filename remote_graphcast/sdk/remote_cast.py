@@ -3,8 +3,8 @@ import boto3
 import time
 import runpod
 import json
-from .constants import *
-from .inpututils import *
+from remote_graphcast.gcutils.constants import *
+from remote_graphcast.gcutils.inpututils import *
 import logging
 logger = logging.getLogger(__name__)
 
@@ -66,12 +66,13 @@ def remote_cast(
 		strict_start_times=True
 	):	
 
-	runpod.api_key = runpod_key
-	validate(gpu_type_id, date_list, strict_start_times)
-	raise ValueError()
 	if cast_id is None:
 		cast_id = generate_cast_id()
 		logger.info(f'cast_id generated {cast_id}')
+	
+	logger.info(f'validating input')
+	validate(gpu_type_id, date_list, strict_start_times)
+	runpod.api_key = runpod_key
 	
 	pod = runpod.create_pod(
 		cloud_type="SECURE", # or else someone might snoop your session and steal your AWS/CDS credentials
@@ -95,7 +96,7 @@ def remote_cast(
 
 	while not monitor.is_complete():
 		time.sleep(60)
-		logger.info('polling for upload completion, all systems green')
+		logger.info('checking forcast status: all systems green')
 
 	logger.info(f'easy-graphcast forcast is complete, {monitor.upload_location()}')
 

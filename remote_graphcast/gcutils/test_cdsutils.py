@@ -1,5 +1,5 @@
 import os
-from .cdsutils import *
+from remote_graphcast.gcutils.cdsutils import *
 
 def test_saves_correctly():
 	filename = "tmp.cruft"

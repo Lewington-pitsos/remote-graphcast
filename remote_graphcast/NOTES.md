@@ -25,3 +25,4 @@ python -m remote_graphcast.cli --param_file=secret_params.json
 - clean up dockerfile
 - change date_list to forcast list
 - fix logging
+- make logging work when importing the actual package
