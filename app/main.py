@@ -1,3 +1,4 @@
+import botocore
 import boto3
 import time
 import fire
@@ -10,18 +11,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-with open("credentials.json", "r") as f:
-	credentials = json.load(f)
-
-runpod.api_key = credentials['runpod_key']
-
 class UploadMonitor():
-	def __init__(self, pod, aws_access_key_id, aws_secret_access_key, aws_bucket, aws_region, cast_id) -> None:
+	def __init__(self, pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id) -> None:
 		self.s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 		self.pod = pod
-		self.id = cast_id
+		self.cast_id = cast_id
 		self.aws_bucket = aws_bucket
-		self.aws_region = aws_region
 
 	def is_complete(self):
 		pod = runpod.get_pod(self.pod['id'])
@@ -29,16 +24,24 @@ class UploadMonitor():
 		if not pod:
 			raise Exception(f'runpod pod {self.pod} was terminated prematurely, output of runpod.get_pod is: {pod}')
 
-		is_complete = self.s3_client.head_object(Bucket=self.aws_bucket, Key=f"{self.id}/{COMPLETE_PATH}")
-
-		return is_complete
+		try:		
+			self.s3_client.head_object(Bucket=self.aws_bucket, Key=get_completion_path(self.cast_id))
+			return True
+		except botocore.exceptions.ClientError as e:
+			if e.response['Error']['Code'] == "404":
+				logger.debug('upload not complete', extra={'expected_s3_error': e})
+				return False
+			else: 
+				raise e
 
 	def upload_location(self):
 		return f"s3://{self.aws_bucket}/{self.id}/"
 
-def _remote_cast(parameters_file=None, **kwargs):
-	if parameters_file is not None:
-		with open(parameters_file, "r") as f:
+def _remote_cast(param_file=None, **kwargs):
+	if param_file is not None:
+		assert param_file.endswith(".json"), "param_file must be a json file"
+
+		with open(param_file, "r") as f:
 			parameters = json.load(f)
 		kwargs = parameters
 
@@ -48,16 +51,19 @@ def remote_cast(
 		aws_access_key_id, 
 		aws_secret_access_key, 
 		aws_bucket, 
-		aws_region, 
 		cds_url, 
 		cds_key, 
 		date_list, 
+		runpod_key,
 		cast_id=None,
-		gpu_type_id="NVIDIA RTX A4000",
-		container_disk_in_gb=100
+		gpu_type_id="NVIDIA A100 80GB PCIe", # graphcast needs at least 61GB GPU ram
+		container_disk_in_gb=12,
+		strict_start_times=True
 	):	
 
-	validate_date_list(date_list)
+	runpod.api_key = runpod_key
+
+	validate_date_list(date_list, strict_start_times=strict_start_times)
 
 	if cast_id is None:
 		cast_id = generate_cast_id()
@@ -93,5 +99,5 @@ def remote_cast(
 
 
 if __name__ == '__main__':
-	setup_logging()
+	setup_logging(logging.INFO)
 	fire.Fire(_remote_cast)

@@ -6,3 +6,4 @@ commands.sh
 cruft
 *.nc
 pad.py
+secret_params.json

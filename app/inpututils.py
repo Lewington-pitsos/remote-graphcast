@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import random
+import climetlab as cml	
 
 def generate_cast_id():
 	adj = [
@@ -42,10 +43,26 @@ def generate_cast_id():
 	]
 
 	present = datetime.now()
-	time_string = present.strftime("%Y-%m-%d_%H-%M-%S")[:-3]
+	time_string = present.strftime("%Y-%m-%d_%H-%M-%S")
 
 	return f"{time_string}_{random.choice(adj)}_{random.choice(nouns)}"
 
+
+def confirm_start_time_exists(start_point):
+	# actually try to download era5 data for this start time if it raises an
+	# exception it means that this time period is not available
+	ds = cml.load_source(
+		"cds",
+		"reanalysis-era5-single-levels",
+		param=["2t"],
+		product_type="reanalysis",
+		grid='60/60',
+		date=start_point['start_date'],
+		time=start_point['start_time'],
+		lazily=True,
+	) 
+
+	ds.to_xarray() 
 
 
 def parse_date_list(date_list):
@@ -54,18 +71,25 @@ def parse_date_list(date_list):
 	date_list = json.loads(date_list.replace("'", '"')) 
 
 	for start in date_list:
-		start['start_time'] = datetime.strptime(start['start_time'], "%Y%m%d%H")
+		start['start_time'] = int(start['start'][-2:])
+		start['start_date'] = start['start'][:-2]
 
 	return date_list
-
-
-def validate_date_list(date_list):
-	# make sure all data is available
-	# make sure start times start at 0600 or 1800
 	
+def get_completion_path(cast_id):
+	return f"{cast_id}/.easy_graphcast_complete"
+
+def validate_date_list(date_list, strict_start_times=True):	
 	# the runpod API cannot handle double quotes so date_list is single quoted
 	if '"' in date_list:
 		raise ValueError('date_list cannot contain double quotes (this is a limitation of the runpod API) replace with single quotes.')
-	
-	parse_date_list(date_list)
 
+	date_list = parse_date_list(date_list)
+
+	if strict_start_times:
+		for start in date_list:
+			if start['start_time'] not in [6, 18]:
+				raise ValueError('you must start all graphcast forcasts at either 0600 or 1800 (see https://youtu.be/PD1v5PCJs_o?t=1915 for more information). You can disable this check by setting strict_start_times=False')
+
+	for start in date_list:
+		confirm_start_time_exists(start)

@@ -1,16 +1,12 @@
-FROM ghcr.io/nvidia/jax:nightly-2023-12-28
+FROM runpod/pytorch:2.1.1-py3.10-cuda12.1.1-devel-ubuntu22.04
+
+RUN pip uninstall -y torch
 
 ADD requirements.txt ./
 RUN pip install -r requirements.txt
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
+RUN pip install -U "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 RUN pip install git+https://github.com/Lewington-pitsos/graphcast.git@fix-requirements
-# RUN pip install tree
-
-RUN pip install python-json-logger
-RUN apt-get install libeccodes-dev -y
 
 ADD start.sh ./
 RUN chmod +x /start.sh

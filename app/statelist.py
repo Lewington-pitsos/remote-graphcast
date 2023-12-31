@@ -1,7 +1,7 @@
 import climetlab as cml
 import xarray
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from constants import CF_NAME_SFC
 
 def load_predictions(pred_root):
@@ -25,7 +25,7 @@ class StateList():
 		self.vars = vars
 	
 	def default_upper_bound(self):
-		return self.start_date + datetime.timedelta(hours=self.forcast_length_hours)
+		return self.start_date + timedelta(hours=self.forcast_length_hours)
 
 	def dates(self, lower_bound=None, upper_bound='max'):
 		wanted_dates = []
@@ -36,7 +36,7 @@ class StateList():
 			upper_bound = self.default_upper_bound()
 
 		for i in range(0, self.forcast_length_hours, self.step_size):
-			candidate_date = self.start_date + datetime.timedelta(hours=i)
+			candidate_date = self.start_date + timedelta(hours=i)
 			is_wanted = True
 			if lower_bound is not None:
 				is_wanted = candidate_date > lower_bound

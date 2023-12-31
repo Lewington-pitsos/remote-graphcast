@@ -1,19 +1,26 @@
 import os
-from inpututils import parse_date_list
+from inpututils import parse_date_list, get_completion_path
 import boto3
 from cdsutils import save_cds_rcfile
 from ai_models_graphcast.model import GraphcastModel
-from datetime import datetime
 from botocore.exceptions import NoCredentialsError
 from constants import *
 from lg import setup_logging
 import logging
 logger = logging.getLogger(__name__)
 
+def upload_completion_file(client, aws_bucket, cast_id):
+	local_complete_file = '/tmp/.easy_graphcast_complete'
+
+	with open(local_complete_file, 'w') as f:
+		f.write('complete')
+	
+	client.upload_file(local_complete_file, aws_bucket, get_completion_path(cast_id))	
+
 def cast_all(
 		aws_access_key_id, 
 		aws_secret_access_key, 
-		bucket_name,
+		aws_bucket,
 		cds_url,
 		cds_key,
 		date_list,	
@@ -28,9 +35,9 @@ def cast_all(
 
 	dir_path = f'/tmp/{cast_id}/'
 	for start_point in date_list:
-		date = start_point['start_time'].strftime("%Y%m%d")
-		time = int(start_point['start_time'].strftime("%H"))
-		dt = datetime.now().strftime("%Y%m%d%H")
+		date = start_point['start_date']
+		time = start_point['start_time']
+		dt = start_point['start']
 		hours_to_forcast = start_point['hours_to_forcast']
 
 		gc = GraphcastModel(
@@ -70,16 +77,18 @@ def cast_all(
 
 			with open(full_path, 'rb') as data:
 				try:
-					s3_client.upload_fileobj(data, bucket_name, s3_path)
+					s3_client.upload_fileobj(data, aws_bucket, s3_path)
 					logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
 				except NoCredentialsError as e:
 					logger.error("Credentials not available")
 					raise e
 
+	upload_completion_file(s3_client, aws_bucket, cast_id)
+
 	logger.info(f"upload complete for {cast_id}")
 
 if __name__ == "__main__":
-	setup_logging()
+	setup_logging(logging.INFO)
 
 	required_variables = [
 		AWS_ACCESS_KEY_ID,
@@ -101,7 +110,7 @@ if __name__ == "__main__":
 	cast_all(
 		aws_access_key_id=os.environ[AWS_ACCESS_KEY_ID], 
 		aws_secret_access_key=os.environ[AWS_SECRET_ACCESS_KEY], 
-		bucket_name=os.environ[AWS_BUCKET],
+		aws_bucket=os.environ[AWS_BUCKET],
 		cds_url=os.environ[CDS_URL],
 		cds_key=os.environ[CDS_KEY],
 		date_list=os.environ[DATE_LIST],
