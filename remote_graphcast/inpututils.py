@@ -2,6 +2,9 @@ import json
 from datetime import datetime
 import random
 import climetlab as cml	
+import logging
+
+logger = logging.getLogger(__name__)
 
 def generate_cast_id():
 	adj = [
@@ -93,3 +96,5 @@ def validate_date_list(date_list, strict_start_times=True):
 
 	for start in date_list:
 		confirm_start_time_exists(start)
+
+	logger.info('forcast list passed validation')

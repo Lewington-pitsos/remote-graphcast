@@ -14,6 +14,8 @@ python app/main.py --param_file=secret_params.jso
 
 python setup.py sdist
 twine upload dist/*
+
+python -m remote_graphcast.cli --param_file=secret_params.json
 ```
 
 ## Todo

@@ -63,7 +63,7 @@ def remote_cast(
 
 	if cast_id is None:
 		cast_id = generate_cast_id()
-
+	
 	pod = runpod.create_pod(
 		cloud_type="SECURE", # or else someone might snoop your session and steal your AWS/CDS credentials
 		name=f"easy-graphcast-{cast_id}", 
@@ -81,7 +81,7 @@ def remote_cast(
 		}
 	)
 	
-	logger.debug(f"forcasting pod created, {pod}")
+	logger.info(f"forcasting pod created, {pod}")
 	monitor = UploadMonitor(pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id)
 
 	while not monitor.is_complete():
