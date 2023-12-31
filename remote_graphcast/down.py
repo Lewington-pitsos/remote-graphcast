@@ -1,6 +1,3 @@
-import os
-import climetlab as cml	
-from datetime import datetime
 from cdsutils import *
 from lg import setup_logging
 import logging
