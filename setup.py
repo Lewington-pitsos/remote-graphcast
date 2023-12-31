@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="remote-graphcast",
-    version="0.0.4",
+    version="0.0.5",
     author="Louka Ewington-Pitsos",
     author_email="lewingtonpitsos@gmail.com",
     description="Allows people without massive GPUs to easily run graphcast on remote runpod servers",
@@ -21,7 +21,7 @@ setuptools.setup(
     install_requires=[
         'boto3', 
         'ai_models_graphcast',
-        'climetlab',
+        'cdsapi',
         'runpod'
 	],
     python_requires='>=3.8',

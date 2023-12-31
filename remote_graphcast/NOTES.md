@@ -24,3 +24,4 @@ python -m remote_graphcast.cli --param_file=secret_params.json
 - test pipy package
 - clean up dockerfile
 - change date_list to forcast list
+- fix logging

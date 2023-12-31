@@ -1,8 +1,8 @@
+import logging
+import cdsapi
 import json
 from datetime import datetime
 import random
-import climetlab as cml	
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -51,21 +51,23 @@ def generate_cast_id():
 	return f"{time_string}_{random.choice(adj)}_{random.choice(nouns)}"
 
 
-def confirm_start_time_exists(start_point):
-	# actually try to download era5 data for this start time if it raises an
-	# exception it means that this time period is not available
-	ds = cml.load_source(
-		"cds",
-		"reanalysis-era5-single-levels",
-		param=["2t"],
-		product_type="reanalysis",
-		grid='60/60',
-		date=start_point['start_date'],
-		time=start_point['start_time'],
-		lazily=True,
-	) 
+def confirm_start_time_exists(start_point, c):
+	start_datetime = datetime.strptime(start_point['start_date'], '%Y%m%d')
 
-	ds.to_xarray() 
+	c.retrieve(
+		"reanalysis-era5-single-levels",
+		{
+			'product_type': 'reanalysis',
+			'format': 'netcdf',
+			'day': start_datetime.day, 
+			'year': start_datetime.year,
+			'month': start_datetime.month,
+			'time': start_point['start_time'],
+			'variable': '2m_temperature',
+			'area': [1, -1, -1, 1,],
+		},
+		'file.nc'
+	)
 
 
 def parse_date_list(date_list):
@@ -94,7 +96,10 @@ def validate_date_list(date_list, strict_start_times=True):
 			if start['start_time'] not in [6, 18]:
 				raise ValueError('you must start all graphcast forcasts at either 0600 or 1800 (see https://youtu.be/PD1v5PCJs_o?t=1915 for more information). You can disable this check by setting strict_start_times=False')
 
+
+	c = cdsapi.Client()
+	c.logger.setLevel(logging.WARNING)
 	for start in date_list:
-		confirm_start_time_exists(start)
+		confirm_start_time_exists(start, c)
 
 	logger.info('forcast list passed validation')

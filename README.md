@@ -1,6 +1,6 @@
 # Remote Graphcast
 
-Run graphcast on a runpod GPU. Output is saved to s3.
+Run graphcast on a runpod GPU. Output is saved to s3. Shouldn't cost more than $0.2 for a 10 day forcast.
 
 ## Order of operations
 

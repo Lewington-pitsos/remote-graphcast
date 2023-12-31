@@ -1,3 +1,6 @@
+from .log_config import setup_logging
+setup_logging()
+
 import os
 import boto3
 from ai_models_graphcast.model import GraphcastModel
@@ -7,6 +10,7 @@ from .inpututils import parse_date_list, get_completion_path
 from .constants import *
 import shutil
 import logging
+
 logger = logging.getLogger(__name__)
 
 def upload_completion_file(client, aws_bucket, cast_id):
@@ -35,6 +39,8 @@ def cast_all(
 
 	tmp_dir = '/tmp/'
 	dir_path = f'{tmp_dir}{cast_id}/'
+	os.makedirs(dir_path, exist_ok=True)
+
 	for start_point in date_list:
 		date = start_point['start_date']
 		time = start_point['start_time']
@@ -56,7 +62,7 @@ def cast_all(
 			debug=True,
 			lead_time=hours_to_forcast, # the number of hours to forcast 
 			only_gpu=True,
-			archive_requests=f"{dir_path}archive",
+			archive_requests=None,
 			hindcast_reference_year=None,
 		)
 
@@ -91,8 +97,6 @@ def cast_all(
 	logger.info(f"upload complete for {cast_id}")
 
 if __name__ == "__main__":
-	logger.setLevel(logging.INFO)
-
 	required_variables = [
 		AWS_ACCESS_KEY_ID,
 		AWS_SECRET_ACCESS_KEY,

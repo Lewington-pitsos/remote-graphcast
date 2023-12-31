@@ -32,7 +32,7 @@ class UploadMonitor():
 				raise e
 
 	def upload_location(self):
-		return f"s3://{self.aws_bucket}/{self.id}/"
+		return f"s3://{self.aws_bucket}/{self.cast_id}/"
 
 def cast_from_parameters(param_file=None, **kwargs):
 	if param_file is not None:
@@ -44,6 +44,14 @@ def cast_from_parameters(param_file=None, **kwargs):
 
 	remote_cast(**kwargs)
 
+def validate_gpu_type_id(gpu_type_id):
+	if gpu_type_id == "NVIDIA A100 80GB PCIe":
+		logger.warn(f'{gpu_type_id} is known to crash on runpod around 50% of the time when used in combination with the remote graphcast docker image. We suggest using NVIDIA A100-SXM4-80GB instead')
+
+def validate(gpu_type_id, date_list, strict_start_times):
+	validate_gpu_type_id(gpu_type_id)
+	validate_date_list(date_list, strict_start_times)
+
 def remote_cast(
 		aws_access_key_id, 
 		aws_secret_access_key, 
@@ -53,16 +61,17 @@ def remote_cast(
 		date_list, 
 		runpod_key,
 		cast_id=None,
-		gpu_type_id="NVIDIA A100 80GB PCIe", # graphcast needs at least 61GB GPU ram
+		gpu_type_id="NVIDIA A100-SXM4-80GB", # graphcast needs at least 61GB GPU ram
 		container_disk_in_gb=50,
 		strict_start_times=True
 	):	
 
 	runpod.api_key = runpod_key
-	validate_date_list(date_list, strict_start_times=strict_start_times)
-
+	validate(gpu_type_id, date_list, strict_start_times)
+	raise ValueError()
 	if cast_id is None:
 		cast_id = generate_cast_id()
+		logger.info(f'cast_id generated {cast_id}')
 	
 	pod = runpod.create_pod(
 		cloud_type="SECURE", # or else someone might snoop your session and steal your AWS/CDS credentials
@@ -90,7 +99,7 @@ def remote_cast(
 
 	logger.info(f'easy-graphcast forcast is complete, {monitor.upload_location()}')
 
-	runpod.terminate_pod(pod.id)
+	runpod.terminate_pod(pod['id'])
 
 	logger.info('pod terminated')
 
