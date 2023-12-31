@@ -71,7 +71,6 @@ def remote_cast(
 			AWS_ACCESS_KEY_ID: aws_access_key_id,
 			AWS_SECRET_ACCESS_KEY: aws_secret_access_key,
 			AWS_BUCKET: aws_bucket,
-			AWS_REGION: aws_region,
 			CDS_KEY: cds_key,
 			CDS_URL: cds_url,
 			DATE_LIST: date_list,

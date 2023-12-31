@@ -54,6 +54,11 @@ def cast_all(
 
 		gc.run()
 
+		os.makedirs(exist_ok=True, name=dir_path)
+
+		with open(f'{dir_path}{dt}-output', 'w') as f:
+			f.write(f"forcast complete for {start_point['start_time']}")
+
 		logger.info(f"forcast complete for {start_point['start_time']}")
 
 	logger.info(f"all forcasts complete for {cast_id}, uploading to s3")
@@ -61,12 +66,15 @@ def cast_all(
 	for subdir, _, files in os.walk(dir_path):
 		for file in files:
 			full_path = os.path.join(subdir, file)
+			s3_path = "/".join(full_path.split('/')[2:])
+
 			with open(full_path, 'rb') as data:
 				try:
-					s3_client.upload_fileobj(data, bucket_name, full_path[len(dir_path)+1:])
-					logger.debug(f"File {file} uploaded successfully")
-				except NoCredentialsError:
+					s3_client.upload_fileobj(data, bucket_name, s3_path)
+					logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
+				except NoCredentialsError as e:
 					logger.error("Credentials not available")
+					raise e
 
 	logger.info(f"upload complete for {cast_id}")
 
@@ -77,7 +85,6 @@ if __name__ == "__main__":
 		AWS_ACCESS_KEY_ID,
 		AWS_SECRET_ACCESS_KEY,
 		AWS_BUCKET,
-		AWS_REGION,
 		CDS_URL,
 		CDS_KEY,
 		DATE_LIST,

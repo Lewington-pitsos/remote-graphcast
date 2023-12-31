@@ -22,7 +22,6 @@ pod = runpod.create_pod(
 		AWS_ACCESS_KEY_ID: credentials[AWS_ACCESS_KEY_ID],
 		AWS_SECRET_ACCESS_KEY: credentials[AWS_SECRET_ACCESS_KEY],
 		AWS_BUCKET: credentials[AWS_BUCKET],
-		AWS_REGION: credentials[AWS_REGION],
 		CDS_KEY: credentials[CDS_KEY],
 		CDS_URL: credentials[CDS_URL],
 		DATE_LIST: "[{'start_time': '2023122518', 'hours_to_forcast': 48}]",

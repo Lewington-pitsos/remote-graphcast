@@ -42,7 +42,7 @@ def generate_cast_id():
 	]
 
 	present = datetime.now()
-	time_string = present.strftime("%Y-%m-%d__%H-%M-%S-%f")[:-3]
+	time_string = present.strftime("%Y-%m-%d_%H-%M-%S")[:-3]
 
 	return f"{time_string}_{random.choice(adj)}_{random.choice(nouns)}"
 
