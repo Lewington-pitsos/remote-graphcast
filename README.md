@@ -1,22 +1,25 @@
-## Helpful Commands
+# Remote Graphcast
 
-```bash
-docker build . -t lewingtonpitsos/easy-graphcast:latest
-docker login
-docker push lewingtonpitsos/easy-graphcast:latest
+Run graphcast on a runpod GPU. Output is saved to s3.
 
-docker run -e AWS_ACCESS_KEY_ID=SOME_ID -e AWS_SECRET_ACCESS_KEY=SOME_SECRET -e AWS_BUCKET=somebucket -e AWS_REGION=ap-southeast-2 -e CDS_KEY=asdfasdfa -e CDS_URL=https://asdfasdfas/sdfa/a lewingtonpitsos/easy-graphcast:latest
+## Order of operations
 
-docker run --gpus all -it lewingtonpitsos/easy-graphcast:latest /bin/bash 
-docker run --gpus all lewingtonpitsos/easy-graphcast:latest 
+1. Input is validated
+2. A secure runpod GPU pod is spun up on your account
+3. Graphcast is installed into that gpu and forcasts of your chosen length are generated for each timestamp, this takes around 10 minutes for a 10 day forcast
+4. These forcasts are saved to your chosen s3 bucket, roughly 6.5GB for 10 days of forcast
+5. The runpod pod is terminated
+6. The program exits
 
-python app/main.py --param_file=secret_params.jso
+## Requirements
 
-```
+- python 3.10+ and pip
+- cds.climate credentials
+- an s3 bucket
+- S3 credentials to go with the bucket
+- Runpod credentials
 
-## Todo
+## Installation
 
-- make pipy package https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56
-- test pipy package
-- clean up dockerfile
-- clean up logging
+## Notes
+

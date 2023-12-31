@@ -10,7 +10,6 @@ from lg import setup_logging
 import logging
 logger = logging.getLogger(__name__)
 
-
 class UploadMonitor():
 	def __init__(self, pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id) -> None:
 		self.s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
@@ -37,7 +36,7 @@ class UploadMonitor():
 	def upload_location(self):
 		return f"s3://{self.aws_bucket}/{self.id}/"
 
-def _remote_cast(param_file=None, **kwargs):
+def cast_from_parameters(param_file=None, **kwargs):
 	if param_file is not None:
 		assert param_file.endswith(".json"), "param_file must be a json file"
 
@@ -57,12 +56,11 @@ def remote_cast(
 		runpod_key,
 		cast_id=None,
 		gpu_type_id="NVIDIA A100 80GB PCIe", # graphcast needs at least 61GB GPU ram
-		container_disk_in_gb=12,
+		container_disk_in_gb=50,
 		strict_start_times=True
 	):	
 
 	runpod.api_key = runpod_key
-
 	validate_date_list(date_list, strict_start_times=strict_start_times)
 
 	if cast_id is None:
@@ -101,4 +99,4 @@ def remote_cast(
 
 if __name__ == '__main__':
 	setup_logging(logging.INFO)
-	fire.Fire(_remote_cast)
+	fire.Fire(cast_from_parameters)

@@ -2,4 +2,4 @@
 
 echo "graphcast pod start script running..."
 
-python remote-graphcast/cast.py
+python remote_graphcast/cast.py

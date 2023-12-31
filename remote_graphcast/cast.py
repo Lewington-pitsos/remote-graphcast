@@ -6,6 +6,7 @@ from ai_models_graphcast.model import GraphcastModel
 from botocore.exceptions import NoCredentialsError
 from constants import *
 from lg import setup_logging
+import shutil
 import logging
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,8 @@ def cast_all(
 	s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 	logger.debug('s3 client set up')
 
-	dir_path = f'/tmp/{cast_id}/'
+	tmp_dir = '/tmp/'
+	dir_path = f'{tmp_dir}{cast_id}/'
 	for start_point in date_list:
 		date = start_point['start_date']
 		time = start_point['start_time']
@@ -47,8 +49,8 @@ def cast_all(
 			path=f'{dir_path}{dt}-output', 
 			metadata={}, 
 			model_args={}, 
-			assets_sub_directory=dir_path,
-			assets=dir_path,
+			assets_sub_directory=tmp_dir,
+			assets=tmp_dir,
 			date=date, # just the date part 
 			time=time, # just the time part
 			staging_dates = None, # alternatively, a list of dates, as opposed to the single date/time
@@ -68,21 +70,23 @@ def cast_all(
 
 		logger.info(f"forcast complete for {start_point['start_time']}")
 
+
+		for subdir, _, files in os.walk(dir_path):
+			for file in files:
+				full_path = os.path.join(subdir, file)
+				s3_path = "/".join(full_path.split('/')[2:])
+
+				with open(full_path, 'rb') as data:
+					try:
+						s3_client.upload_fileobj(data, aws_bucket, s3_path)
+						logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
+					except NoCredentialsError as e:
+						logger.error("Credentials not available")
+						raise e
+		
+		shutil.rmtree(dir_path)
+
 	logger.info(f"all forcasts complete for {cast_id}, uploading to s3")
-
-	for subdir, _, files in os.walk(dir_path):
-		for file in files:
-			full_path = os.path.join(subdir, file)
-			s3_path = "/".join(full_path.split('/')[2:])
-
-			with open(full_path, 'rb') as data:
-				try:
-					s3_client.upload_fileobj(data, aws_bucket, s3_path)
-					logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
-				except NoCredentialsError as e:
-					logger.error("Credentials not available")
-					raise e
-
 	upload_completion_file(s3_client, aws_bucket, cast_id)
 
 	logger.info(f"upload complete for {cast_id}")
