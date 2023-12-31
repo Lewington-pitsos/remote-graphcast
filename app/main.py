@@ -69,6 +69,7 @@ def remote_cast(
 		cast_id = generate_cast_id()
 
 	pod = runpod.create_pod(
+		cloud_type="SECURE", # or else someone might snoop your session and steal your AWS/CDS credentials
 		name=f"easy-graphcast-{cast_id}", 
 		image_name="lewingtonpitsos/easy-graphcast:latest", 
 		gpu_type_id=gpu_type_id,
