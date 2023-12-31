@@ -1,7 +1,7 @@
 import json
-from cast import cast_all
-from constants import *
-from inpututils import generate_cast_id
+from .cast import cast_all
+from .constants import *
+from .inpututils import generate_cast_id
 
 
 with open("credentials.json", "r") as f:

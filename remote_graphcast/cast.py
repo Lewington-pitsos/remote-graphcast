@@ -1,10 +1,10 @@
 import os
-from inpututils import parse_date_list, get_completion_path
 import boto3
 from cdsutils import save_cds_rcfile
 from ai_models_graphcast.model import GraphcastModel
 from botocore.exceptions import NoCredentialsError
-from constants import *
+from .inpututils import parse_date_list, get_completion_path
+from .constants import *
 import shutil
 import logging
 logger = logging.getLogger(__name__)

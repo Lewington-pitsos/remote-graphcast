@@ -1,4 +1,4 @@
-from cdsutils import *
+from .cdsutils import *
 import logging
 
 logger = logging.getLogger(__name__)

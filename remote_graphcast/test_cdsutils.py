@@ -1,5 +1,5 @@
 import os
-from cdsutils import *
+from .cdsutils import *
 
 def test_saves_correctly():
 	filename = "tmp.cruft"

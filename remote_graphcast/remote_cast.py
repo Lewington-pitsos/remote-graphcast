@@ -1,11 +1,10 @@
 import botocore
 import boto3
 import time
-import fire
 import runpod
 import json
-from constants import *
-from inpututils import *
+from .constants import *
+from .inpututils import *
 import logging
 logger = logging.getLogger(__name__)
 
@@ -96,6 +95,3 @@ def remote_cast(
 	logger.info('pod terminated')
 
 
-if __name__ == '__main__':
-	logger.setLevel(logging.INFO)
-	fire.Fire(cast_from_parameters)
