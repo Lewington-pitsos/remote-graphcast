@@ -1,5 +1,4 @@
 from cdsutils import *
-from lg import setup_logging
 import logging
 
 logger = logging.getLogger(__name__)
@@ -18,8 +17,6 @@ logger = logging.getLogger(__name__)
 
 # 		all_ds.append(ds)
 
-# 	logger.info('all downloaded', extra={'datasets': all_ds})
-
 # 	filename = 'cruft/era5/-20231220-era5.nc'
 # 	os.makedirs(os.path.dirname(filename), exist_ok=True)
 
@@ -29,5 +26,4 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == '__main__':
-	setup_logging()
-	# download()
+	logger.debug('what a good time')

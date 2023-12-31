@@ -1,10 +1,8 @@
 from constants import *
 import json
 import runpod
-from lg import setup_logging
 import logging
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
 with open("credentials.json", "r") as f:
@@ -29,15 +27,4 @@ pod = runpod.create_pod(
 	}
 )
 
-logger.info('pod', extra={'type':type(pod), 'pod': pod, 'dir': dir(pod)})
-
-pod2 = runpod.get_pod(pod['id'])
-
-logger.info('pod2', extra={'pod': pod2})
-
-runpod.terminate_pod(pod['id'])
-
-pod3 = runpod.get_pod(pod['id'])
-
-logger.info('pod3', extra={'pod': pod3})
 

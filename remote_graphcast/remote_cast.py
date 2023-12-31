@@ -6,7 +6,6 @@ import runpod
 import json
 from constants import *
 from inpututils import *
-from lg import setup_logging
 import logging
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class UploadMonitor():
 			return True
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'] == "404":
-				logger.debug('upload not complete', extra={'expected_s3_error': e})
+				logger.debug(f'upload not complete, expected_s3_error {e}')
 				return False
 			else: 
 				raise e
@@ -83,14 +82,14 @@ def remote_cast(
 		}
 	)
 	
-	logger.debug("forcasting pod created", extra={'pod_info': pod})
+	logger.debug(f"forcasting pod created, {pod}")
 	monitor = UploadMonitor(pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id)
 
 	while not monitor.is_complete():
 		time.sleep(60)
 		logger.info('polling for upload completion, all systems green')
 
-	logger.info('easy-graphcast forcast is complete', extra={'forcast_location', monitor.upload_location()})
+	logger.info(f'easy-graphcast forcast is complete, {monitor.upload_location()}')
 
 	runpod.terminate_pod(pod.id)
 
@@ -98,5 +97,5 @@ def remote_cast(
 
 
 if __name__ == '__main__':
-	setup_logging(logging.INFO)
+	logger.setLevel(logging.INFO)
 	fire.Fire(cast_from_parameters)

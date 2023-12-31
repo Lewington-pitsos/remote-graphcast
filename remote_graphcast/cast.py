@@ -5,7 +5,6 @@ from cdsutils import save_cds_rcfile
 from ai_models_graphcast.model import GraphcastModel
 from botocore.exceptions import NoCredentialsError
 from constants import *
-from lg import setup_logging
 import shutil
 import logging
 logger = logging.getLogger(__name__)
@@ -92,7 +91,7 @@ def cast_all(
 	logger.info(f"upload complete for {cast_id}")
 
 if __name__ == "__main__":
-	setup_logging(logging.INFO)
+	logger.setLevel(logging.INFO)
 
 	required_variables = [
 		AWS_ACCESS_KEY_ID,

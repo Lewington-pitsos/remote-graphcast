@@ -2,10 +2,6 @@ import json
 from cast import cast_all
 from constants import *
 from inpututils import generate_cast_id
-import logging
-from lg import setup_logging
-setup_logging(level=logging.INFO)
-
 
 
 with open("credentials.json", "r") as f:
