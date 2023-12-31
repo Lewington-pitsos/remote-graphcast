@@ -1,8 +1,6 @@
 import os
 import climetlab as cml	
 from datetime import datetime
-from statelist import StateList
-import xarray
 from cdsutils import *
 from lg import setup_logging
 import logging
@@ -11,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 # def download():
-# 	p = StateList(datetime(2023, 12, 30, 6), 241, step_size=12)
 # 	predicted_dates = p.dates_mapped_to_hours(
 # 		upper_bound=datetime(2023, 12, 31, 6)
 # 	)
@@ -37,4 +34,3 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
 	setup_logging()
 	# download()
-	confirm_start_time_exists({'start_date': '20231231', 'start_time': 18})

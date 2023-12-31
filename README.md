@@ -16,7 +16,7 @@ python app/main.py --param_file=secret_params.jso
 
 ## Todo
 
-- make pipy package
+- make pipy package https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56
 - test pipy package
 - clean up dockerfile
 - clean up logging
