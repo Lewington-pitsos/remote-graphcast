@@ -1,25 +1,18 @@
 import os
 import climetlab as cml	
-import datetime
+from datetime import datetime
 from statelist import StateList
 import xarray
-from constants import CDS_KEY, CDS_URL
-import json
 from cdsutils import *
 from lg import setup_logging
 import logging
+
 logger = logging.getLogger(__name__)
 
-# with open('credentials.json') as f:
-# 	credentials = json.load(f)
-
-
-# save_cds_rcfile(credentials[CDS_KEY], credentials[CDS_URL])
-
 def download():
-	p = StateList(datetime.datetime(2023, 12, 30, 6), 241, 12)
+	p = StateList(datetime(2023, 12, 30, 6), 241, 12)
 	predicted_dates = p.dates_mapped_to_hours(
-		upper_bound=datetime.datetime(2023, 12, 31, 6)
+		upper_bound=datetime(2023, 12, 31, 6)
 	)
 
 

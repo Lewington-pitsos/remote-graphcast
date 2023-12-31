@@ -1,7 +1,7 @@
 import climetlab as cml
 import xarray
 import numpy as np
-import datetime
+from datetime import datetime
 from constants import CF_NAME_SFC
 
 def load_predictions(pred_root):
@@ -30,7 +30,7 @@ class StateList():
 	def dates(self, lower_bound=None, upper_bound='max'):
 		wanted_dates = []
 		if upper_bound == 'now':
-			upper_bound = datetime.datetime.now()
+			upper_bound = datetime.now()
 
 		if upper_bound == 'max':
 			upper_bound = self.default_upper_bound()
