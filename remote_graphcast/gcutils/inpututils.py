@@ -1,6 +1,5 @@
 import os
 import logging
-import cdsapi
 import json
 from datetime import datetime
 import random
