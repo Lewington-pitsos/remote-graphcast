@@ -4,6 +4,6 @@
 	"aws_bucket": "xxx",
 	"cds_key": "xxxxxx:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx", 
 	"cds_url": "https://cds.climate.copernicus.eu/api/v2",
-	"date_list": "[{'start': '2023122518', 'hours_to_forcast': 48}]",
+	"forcast_list": "[{'start': '2023122518', 'hours_to_forcast': 48}]",
 	"runpod_key": "xxx"
 }

@@ -6,7 +6,7 @@ remote_cast(
 	aws_bucket='YOUR_AWS_BUCKET_NAME',
 	cds_url='https://cds.climate.copernicus.eu/api/v2', # this is probably your CDS URL 
 	cds_key='YOUR_CDS_KEY',
-	date_list="[{'start': '2023122518', 'hours_to_forcast': 48}]", # dates to forcast from, note the weird quasi-JSON format, of this string, use single quotes instead of double quotes
+	forcast_list="[{'start': '2023122518', 'hours_to_forcast': 48}]", # dates to forcast from, note the weird quasi-JSON format, of this string, use single quotes instead of double quotes
 	runpod_key='YOUR_RUNPOD_KEY',
 	gpu_type_id="NVIDIA A100 80GB PCIe", # graphcast needs at least 61GB GPU ram
 	container_disk_in_gb=50, # you'll need around 40GB per 10 day forcast + a healthy 10GB buffer

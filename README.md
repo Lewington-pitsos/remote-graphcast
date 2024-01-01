@@ -21,5 +21,12 @@ Run graphcast on a runpod GPU. Output is saved to s3. Shouldn't cost more than $
 
 ## Installation
 
-## Notes
+## Example Code
+
+```python
+
+# to test, select a date in the future and it will raise an error
+
+```
+
 

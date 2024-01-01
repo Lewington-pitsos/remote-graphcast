@@ -48,9 +48,9 @@ def validate_gpu_type_id(gpu_type_id):
 	if gpu_type_id == "NVIDIA A100 80GB PCIe":
 		logger.warn(f'{gpu_type_id} is known to crash on runpod around 50% of the time when used in combination with the remote graphcast docker image. We suggest using NVIDIA A100-SXM4-80GB instead')
 
-def validate(gpu_type_id, date_list, strict_start_times):
+def validate(gpu_type_id, forcast_list, strict_start_times):
 	validate_gpu_type_id(gpu_type_id)
-	validate_date_list(date_list, strict_start_times)
+	validate_forcast_list(forcast_list, strict_start_times)
 
 def remote_cast(
 		aws_access_key_id, 
@@ -58,7 +58,7 @@ def remote_cast(
 		aws_bucket, 
 		cds_url, 
 		cds_key, 
-		date_list, 
+		forcast_list, 
 		runpod_key,
 		cast_id=None,
 		gpu_type_id="NVIDIA A100-SXM4-80GB", # graphcast needs at least 61GB GPU ram
@@ -71,7 +71,7 @@ def remote_cast(
 		logger.info(f'cast_id generated {cast_id}')
 	
 	logger.info(f'validating input')
-	validate(gpu_type_id, date_list, strict_start_times)
+	validate(gpu_type_id, forcast_list, strict_start_times)
 	runpod.api_key = runpod_key
 	
 	pod = runpod.create_pod(
@@ -86,7 +86,7 @@ def remote_cast(
 			AWS_BUCKET: aws_bucket,
 			CDS_KEY: cds_key,
 			CDS_URL: cds_url,
-			DATE_LIST: date_list,
+			FORCAST_LIST: forcast_list,
 			CAST_ID: cast_id			
 		}
 	)

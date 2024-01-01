@@ -6,7 +6,7 @@ import boto3
 from ai_models_graphcast.model import GraphcastModel
 from botocore.exceptions import NoCredentialsError
 from remote_graphcast.gcutils.cdsutils import save_cds_rcfile
-from remote_graphcast.gcutils.inpututils import parse_date_list, get_completion_path
+from remote_graphcast.gcutils.inpututils import parse_forcast_list, get_completion_path
 from remote_graphcast.gcutils.constants import *
 import shutil
 import logging
@@ -27,13 +27,13 @@ def cast_all(
 		aws_bucket,
 		cds_url,
 		cds_key,
-		date_list,	
+		forcast_list,	
 		cast_id
 	):
 
 	save_cds_rcfile(cds_key=cds_key, cds_url=cds_url)
 	logger.debug('cds credentials file created')
-	date_list = parse_date_list(date_list)
+	forcast_list = parse_forcast_list(forcast_list)
 	s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 	logger.debug('s3 client set up')
 
@@ -41,7 +41,7 @@ def cast_all(
 	dir_path = f'{tmp_dir}{cast_id}/'
 	os.makedirs(dir_path, exist_ok=True)
 
-	for start_point in date_list:
+	for start_point in forcast_list:
 		date = start_point['start_date']
 		time = start_point['start_time']
 		dt = start_point['start']
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 		AWS_BUCKET,
 		CDS_URL,
 		CDS_KEY,
-		DATE_LIST,
+		FORCAST_LIST,
 		CAST_ID
 	]
 
@@ -120,6 +120,6 @@ if __name__ == "__main__":
 		aws_bucket=os.environ[AWS_BUCKET],
 		cds_url=os.environ[CDS_URL],
 		cds_key=os.environ[CDS_KEY],
-		date_list=os.environ[DATE_LIST],
+		forcast_list=os.environ[FORCAST_LIST],
 		cast_id=os.environ[CAST_ID],
 	)

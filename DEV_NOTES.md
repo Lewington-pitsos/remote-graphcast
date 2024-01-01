@@ -20,9 +20,5 @@ python -m remote_graphcast.cli --param_file=secret_params.json
 
 ## Todo
 
-- make pipy package https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56
 - test pipy package
-- clean up dockerfile
-- change date_list to forcast list
 - make logging work when importing the actual package
-- add test version

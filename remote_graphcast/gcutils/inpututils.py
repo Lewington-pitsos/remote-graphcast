@@ -70,36 +70,36 @@ def confirm_start_time_exists(start_point, c):
 	)
 
 
-def parse_date_list(date_list):
-	# the runpod API cannot handle double quotes so date_list is single quoted
+def parse_forcast_list(forcast_list):
+	# the runpod API cannot handle double quotes so forcast_list is single quoted
 	# we need to convert it to regular JSON
-	date_list = json.loads(date_list.replace("'", '"')) 
+	forcast_list = json.loads(forcast_list.replace("'", '"')) 
 
-	for start in date_list:
+	for start in forcast_list:
 		start['start_time'] = int(start['start'][-2:])
 		start['start_date'] = start['start'][:-2]
 
-	return date_list
+	return forcast_list
 	
 def get_completion_path(cast_id):
 	return f"{cast_id}/.easy_graphcast_complete"
 
-def validate_date_list(date_list, strict_start_times=True):	
-	# the runpod API cannot handle double quotes so date_list is single quoted
-	if '"' in date_list:
-		raise ValueError('date_list cannot contain double quotes (this is a limitation of the runpod API) replace with single quotes.')
+def validate_forcast_list(forcast_list, strict_start_times=True):	
+	# the runpod API cannot handle double quotes so forcast_list is single quoted
+	if '"' in forcast_list:
+		raise ValueError('forcast_list cannot contain double quotes (this is a limitation of the runpod API) replace with single quotes.')
 
-	date_list = parse_date_list(date_list)
+	forcast_list = parse_forcast_list(forcast_list)
 
 	if strict_start_times:
-		for start in date_list:
+		for start in forcast_list:
 			if start['start_time'] not in [6, 18]:
 				raise ValueError('you must start all graphcast forcasts at either 0600 or 1800 (see https://youtu.be/PD1v5PCJs_o?t=1915 for more information). You can disable this check by setting strict_start_times=False')
 
 
 	c = cdsapi.Client()
 	c.logger.setLevel(logging.WARNING)
-	for start in date_list:
+	for start in forcast_list:
 		confirm_start_time_exists(start, c)
 
 	logger.info('forcast list passed validation')
