@@ -82,13 +82,9 @@ def cast_all(
 				s3_path = "/".join(full_path.split('/')[2:])
 
 				with open(full_path, 'rb') as data:
-					try:
-						s3_client.upload_fileobj(data, aws_bucket, s3_path)
-						logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
-					except NoCredentialsError as e:
-						logger.error("Credentials not available")
-						raise e
-		
+					s3_client.upload_fileobj(data, aws_bucket, s3_path)
+					logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
+	
 		shutil.rmtree(dir_path)
 
 	logger.info(f"all forcasts complete for {cast_id}, uploading to s3")

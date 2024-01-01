@@ -1,23 +1,23 @@
 # Remote Graphcast
 
-Run graphcast on a runpod GPU. Output is saved to s3. Shouldn't cost more than $0.2 for a 10 day forcast.
+Run [graphcast](https://github.com/google-deepmind/graphcast) on a [runpod](https://runpod.io/) GPU server. Output is saved to [s3](https://aws.amazon.com/pm/serv-s3/). Shouldn't cost more than $0.6 USD for a 10 day forcast.
 
 ## Order of operations
 
-1. Input is validated
-2. A secure runpod GPU pod is spun up on your account
-3. Graphcast is installed into that gpu and forcasts of your chosen length are generated for each timestamp, this takes around 10 minutes for a 10 day forcast
-4. These forcasts are saved to your chosen s3 bucket, roughly 6.5GB for 10 days of forcast
+1. Your input is validated
+2. A secure runpod GPU pod is spun up on your runpod account
+3. Graphcast is installed into that gpu and forecasts of your chosen length are generated for each timestamp, this takes around 10 minutes for a 10 day forcast
+4. These forecasts are saved to your chosen s3 bucket, roughly **6.5GB for 10 days** of forecast
 5. The runpod pod is terminated
 6. The program exits
 
 ## Requirements
 
-- python 3.10+ and pip
-- cds.climate credentials
-- an s3 bucket
+- python 3.8+ and pip
+- [cds.climate](https://cds.climate.copernicus.eu/api-how-to) credentials
+- an [AWS](https://aws.amazon.com/console/) s3 bucket, free tier should be fine
 - S3 credentials to go with the bucket
-- Runpod credentials
+- [Runpod](https://www.runpod.io/) credentials
 
 ## Installation
 
@@ -39,7 +39,7 @@ remote_cast(
 	# dates to forcast from, note the weird quasi-JSON format, of this string, use single quotes instead of double quotes
 	# select a date in the future and it will raise an error without spinning up anything
 	runpod_key='YOUR_RUNPOD_KEY',
-	gpu_type_id="NVIDIA A100-SXM4-80GB", # graphcast needs at least 61GB GPU ram
+	gpu_type_id="NVIDIA A100-SXM4-80GB", # graphcast needs at least 61GB GPU ram (unless you want to quantize)
 	container_disk_in_gb=50, # you'll need around 40GB per 10 day forcast + a healthy 10GB buffer
 )
 

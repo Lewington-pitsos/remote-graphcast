@@ -9,5 +9,8 @@ RUN pip install -U "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-relea
 COPY remote_graphcast ./remote_graphcast
 ADD start.sh ./
 RUN chmod +x ./start.sh
+# in case the file was saved on windows, this makes it unix compatible
+RUN sed -i -e 's/\r$//' start.sh 
+
 
 CMD ["./start.sh"]

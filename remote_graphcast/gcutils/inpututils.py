@@ -1,8 +1,9 @@
 import os
 import logging
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
+from remote_graphcast.gcutils.cdsutils import get_latest_available_date
 
 logger = logging.getLogger(__name__)
 
@@ -97,17 +98,23 @@ def validate_forcast_list(forcast_list, strict_start_times=True):
 		for start in forcast_list:
 			if start['start_time'] not in [6, 18]:
 				raise ValueError('you must start all graphcast forcasts at either 0600 or 1800 (see https://youtu.be/PD1v5PCJs_o?t=1915 for more information). You can disable this check by setting strict_start_times=False')
+	try:
+		latest_available_date = get_latest_available_date()	
+		got_date = True
+	except Exception as e:
+		logger.info(f"could not get the latest available date due to error: {e}")
+		got_date = False
 
-	# I am banned from cds :(
-	# c = cdsapi.Client()
-	# c.logger.setLevel(logging.WARNING)
-	# for start in forcast_list:
-	# 	confirm_start_time_exists(start, c)
-			
-	for start in forcast_list:
-		start_date = datetime.strptime(start['start'], '%Y%m%d%H')
-		# if this is 6 days ago or less raise a warning that the data may not exist
-		if (datetime.now() - start_date).days <= 6:
-			logger.warning(f"the forcast start date {start['start']} is less than 6 days ago, the data may not exist yet. Monitor the runpod instance closely")
-		
-	logger.info('forcast list passed validation')
+	if got_date:
+		for start in forcast_list:
+			start_date = datetime.strptime(start['start'], '%Y%m%d%H')
+			if latest_available_date < start_date:
+				raise ValueError(f"there is no public ERA5 data for the start date {start['start']} so you cannot start a forcast from that date. The latest available date is {latest_available_date}")
+	else:
+		latest_available_date = datetime.now() - timedelta(days=5)
+		for start in forcast_list:
+			start_date = datetime.strptime(start['start'], '%Y%m%d%H')
+			if latest_available_date < start_date:
+				logger.warning(f"the forcast start date {start_date} is more recent than 5 days ago, the data may not exist yet. Monitor the runpod instance closely")
+
+	logger.info('input passed validation')

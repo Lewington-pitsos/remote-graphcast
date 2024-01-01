@@ -1,4 +1,3 @@
-import botocore
 import boto3
 import time
 import runpod
@@ -24,8 +23,8 @@ class UploadMonitor():
 		try:		
 			self.s3_client.head_object(Bucket=self.aws_bucket, Key=get_completion_path(self.cast_id))
 			return True
-		except botocore.exceptions.ClientError as e:
-			if e.response['Error']['Code'] == "404":
+		except Exception as e:
+			if hasattr(e, 'response') and e.response['Error'].get('Code') == "404":
 				logger.debug(f'upload not complete, expected_s3_error {e}')
 				return False
 			else: 
