@@ -46,12 +46,13 @@ def cast_all(
 		time = start_point['start_time']
 		dt = start_point['start']
 		hours_to_forcast = start_point['hours_to_forcast']
+		output_name = f'{dir_path}{dt}-output'
 
 		gc = GraphcastModel(
 			input="cds", 
 			output="file", 
 			download_assets=True, 
-			path=f'{dir_path}{dt}-output', 
+			path=output_name, 
 			metadata={}, 
 			model_args={}, 
 			assets_sub_directory=tmp_dir,
@@ -68,24 +69,14 @@ def cast_all(
 
 		gc.run()
 
-		os.makedirs(exist_ok=True, name=dir_path)
+		logger.info(f"forcast complete for {start_point['start']}")
 
-		with open(f'{dir_path}{dt}-output', 'w') as f:
-			f.write(f"forcast complete for {start_point['start_time']}")
+		s3_path = "/".join(output_name.split('/')[2:])
+		with open(output_name, 'rb') as data:
+			s3_client.upload_fileobj(data, aws_bucket, s3_path)
+			logger.debug(f"File {s3_path} uploaded successfully from {output_name}")
 
-		logger.info(f"forcast complete for {start_point['start_time']}")
-
-
-		for subdir, _, files in os.walk(dir_path):
-			for file in files:
-				full_path = os.path.join(subdir, file)
-				s3_path = "/".join(full_path.split('/')[2:])
-
-				with open(full_path, 'rb') as data:
-					s3_client.upload_fileobj(data, aws_bucket, s3_path)
-					logger.debug(f"File {s3_path} uploaded successfully from {full_path}")
-	
-		shutil.rmtree(dir_path)
+		os.remove(output_name)
 
 	logger.info(f"all forcasts complete for {cast_id}, uploading to s3")
 	upload_completion_file(s3_client, aws_bucket, cast_id)
