@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="remote-graphcast",
-    version="0.0.5",
+    version="0.0.6",
     author="Louka Ewington-Pitsos",
     author_email="lewingtonpitsos@gmail.com",
     description="Allows people without massive GPUs to easily run graphcast on remote runpod servers",

@@ -95,8 +95,8 @@ def remote_cast(
 	monitor = UploadMonitor(pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id)
 
 	while not monitor.is_complete():
+		logger.info('checking runpod and s3 for forcast status: all systems green')
 		time.sleep(60)
-		logger.info('checking forcast status: all systems green')
 
 	logger.info(f'easy-graphcast forcast is complete, {monitor.upload_location()}')
 

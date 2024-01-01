@@ -1,3 +1,4 @@
+import os
 import logging
 import cdsapi
 import json
@@ -69,6 +70,8 @@ def confirm_start_time_exists(start_point, c):
 		'file.nc'
 	)
 
+	os.remove('file.nc')
+
 
 def parse_forcast_list(forcast_list):
 	# the runpod API cannot handle double quotes so forcast_list is single quoted
@@ -96,10 +99,16 @@ def validate_forcast_list(forcast_list, strict_start_times=True):
 			if start['start_time'] not in [6, 18]:
 				raise ValueError('you must start all graphcast forcasts at either 0600 or 1800 (see https://youtu.be/PD1v5PCJs_o?t=1915 for more information). You can disable this check by setting strict_start_times=False')
 
-
-	c = cdsapi.Client()
-	c.logger.setLevel(logging.WARNING)
+	# I am banned from cds :(
+	# c = cdsapi.Client()
+	# c.logger.setLevel(logging.WARNING)
+	# for start in forcast_list:
+	# 	confirm_start_time_exists(start, c)
+			
 	for start in forcast_list:
-		confirm_start_time_exists(start, c)
-
+		start_date = datetime.strptime(start['start'], '%Y%m%d%H')
+		# if this is 6 days ago or less raise a warning that the data may not exist
+		if (datetime.now() - start_date).days <= 6:
+			logger.warning(f"the forcast start date {start['start']} is less than 6 days ago, the data may not exist yet. Monitor the runpod instance closely")
+		
 	logger.info('forcast list passed validation')

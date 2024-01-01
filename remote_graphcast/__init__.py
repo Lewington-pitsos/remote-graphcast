@@ -1,1 +1,1 @@
-from remote_graphcast.sdk.remote_cast import remote_cast
+from remote_graphcast.sdk import remote_cast
