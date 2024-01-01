@@ -21,6 +21,8 @@ Run graphcast on a runpod GPU. Output is saved to s3. Shouldn't cost more than $
 
 ## Installation
 
+`pip install remote-graphcast`
+
 ## Example Code
 
 ```python
