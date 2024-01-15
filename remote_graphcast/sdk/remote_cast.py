@@ -103,4 +103,6 @@ def remote_cast(
 
 	logger.info('pod terminated')
 
+	return monitor.upload_location()
+
 
