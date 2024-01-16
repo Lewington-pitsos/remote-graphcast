@@ -11,3 +11,4 @@ secret_params.json
 dist/
 *.egg-info/
 build
+test.py

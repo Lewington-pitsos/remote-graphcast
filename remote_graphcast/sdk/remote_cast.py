@@ -90,14 +90,14 @@ def remote_cast(
 		}
 	)
 	
-	logger.info(f"forcasting pod created, {pod}")
+	logger.info(f"forcasting pod created, id: {pod['id']}, machineId: {pod['machineId']}, machine: {pod['machine']}")
 	monitor = UploadMonitor(pod, aws_access_key_id, aws_secret_access_key, aws_bucket, cast_id)
 
 	while not monitor.is_complete():
 		logger.info('checking runpod and s3 for forcast status: all systems green')
 		time.sleep(60)
 
-	logger.info(f'easy-graphcast forcast is complete, {monitor.upload_location()}')
+	logger.info(f'easy-graphcast forcast is complete saved to, {monitor.upload_location()}')
 
 	runpod.terminate_pod(pod['id'])
 
